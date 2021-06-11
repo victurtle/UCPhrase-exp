@@ -625,7 +625,7 @@ if __name__ == '__main__':
     import time
     import pyximport
     pyximport.install()
-    
+
     start_time = time.time()
     processor = KeywordProcessor()
     with open('../../data/kp20k/tokenized_train.txt') as rf:
@@ -637,4 +637,3 @@ if __name__ == '__main__':
     processor.replace_keywords(text)
 
     print("--- %s seconds ---" % (time.time() - start_time))
-    
