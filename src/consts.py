@@ -72,12 +72,12 @@ SPLIT_TOKEN = "@@"
 LM_NAME = DATA_CONFIG.lm_name
 LM_NAME_SUFFIX = LM_NAME.split("/")[-1]
 DEVICE = utils.get_device(ARGS.gpu)
-LM_MODEL = transformers.RobertaModel.from_pretrained(LM_NAME).eval().to(DEVICE)
-LM_TOKENIZER = transformers.RobertaTokenizerFast.from_pretrained(LM_NAME)
-# LM_MODEL = transformers.AutoModel.from_pretrained(LM_NAME).eval().to(DEVICE)
-# LM_TOKENIZER = transformers.AutoTokenizer.from_pretrained(
-#     LM_NAME, use_fast=False, normalization=True
-# )
+# LM_MODEL = transformers.RobertaModel.from_pretrained(LM_NAME).eval().to(DEVICE)
+# LM_TOKENIZER = transformers.RobertaTokenizerFast.from_pretrained(LM_NAME)
+LM_MODEL = transformers.AutoModel.from_pretrained(LM_NAME).eval().to(DEVICE)
+LM_TOKENIZER = transformers.AutoTokenizer.from_pretrained(
+    LM_NAME, use_fast=False, normalization=True
+)
 print(f"[Consts] Loading pretrained model: {LM_NAME} OK!")
 
 # html visualization

@@ -107,8 +107,8 @@ class SentEvaluator:
         n_chars = 0
         span_start_to_offset[0] = 0
         for i, token in enumerate(tokens):
-            # # For BERT
-            # token = token.replace(consts.SPLIT_TOKEN, "")
+            # For BERT
+            token = token.replace(consts.SPLIT_TOKEN, "")
             if token.startswith(consts.PREFIX_TOKEN):
                 if len(n_tokens) != 0:
                     n_chars += len(n_tokens[-1])
