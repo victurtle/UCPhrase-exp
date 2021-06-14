@@ -107,6 +107,8 @@ class SentEvaluator:
         n_chars = 0
         span_start_to_offset[0] = 0
         for i, token in enumerate(tokens):
+            # For BERT
+            token = token.replace(consts.SPLIT_TOKEN, "")
             if token.startswith(consts.PREFIX_TOKEN):
                 if len(n_tokens) != 0:
                     n_chars += len(n_tokens[-1])
@@ -118,7 +120,7 @@ class SentEvaluator:
                 n_tokens[-1] = n_tokens[-1] + token
         if len(n_tokens) != 0:
             span_end_to_offset[len(tokens)] = n_chars + len(n_tokens[-1])
-        text = " ".join(n_tokens).replace(consts.SPLIT_TOKEN, "")
+        text = " ".join(n_tokens)
         spans = list(
             map(
                 lambda x: (span_start_to_offset[x[0]], span_end_to_offset[x[1]], x[2]),

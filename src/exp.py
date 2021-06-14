@@ -63,7 +63,7 @@ class Experiment:
             )
             self.trainer = model_emb.EmbedTrainer(model=model)
 
-    def train(self, num_epochs=20):
+    def train(self, num_epochs=60):
         self.train_preprocessor.tokenize_corpus()
         self.train_annotator.mark_corpus()
         path_sampled_train_data = self.train_annotator.sample_train_data()

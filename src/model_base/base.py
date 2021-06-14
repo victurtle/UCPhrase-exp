@@ -137,7 +137,7 @@ class BaseModel(nn.Module):
             predicted_spans = predicted_sent["spans"]
             for l_idx, r_idx, prob in predicted_spans:
                 if prob > threshold:
-                    cand = consts.roberta_tokens_to_str(tokens[l_idx : r_idx + 1])
+                    cand = consts.tokens_to_str(tokens[l_idx : r_idx + 1])
                     cand = utils.stem_cand(cand)
                     if cand:
                         cands.add(cand)
