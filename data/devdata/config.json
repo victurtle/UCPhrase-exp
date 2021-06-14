@@ -1,5 +1,5 @@
 {
-    "lm_name": "allenai/cs_roberta_base",
+    "lm_name": "vinai/bertweet-base",
     "path_tagging_docs": "./standard/devdata.tagging.docs.jsonl",
     "paths_tagging_human": [
         "./standard/devdata.tagging.human_0.json",

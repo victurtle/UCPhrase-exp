@@ -91,8 +91,8 @@ class SentEvaluator:
         for splitsent in sent:
             _tokens = splitsent["tokens"]
             if len(_tokens) > 0:
-                if not _tokens[0].startswith(consts.GPT_TOKEN):
-                    _tokens[0] = consts.GPT_TOKEN + _tokens[0]
+                if not _tokens[0].startswith(consts.PREFIX_TOKEN):
+                    _tokens[0] = consts.PREFIX_TOKEN + _tokens[0]
             _spans = splitsent["spans"]
             _spans = [
                 (_span[0] + len(tokens), _span[1] + len(tokens) + 1, _span[2])
@@ -103,22 +103,22 @@ class SentEvaluator:
         span_start_to_offset = {}
         span_end_to_offset = {}
         n_tokens = []
-        assert len(tokens) == 0 or tokens[0].startswith(consts.GPT_TOKEN)
+        assert len(tokens) == 0 or tokens[0].startswith(consts.PREFIX_TOKEN)
         n_chars = 0
         span_start_to_offset[0] = 0
         for i, token in enumerate(tokens):
-            if token.startswith(consts.GPT_TOKEN):
+            if token.startswith(consts.PREFIX_TOKEN):
                 if len(n_tokens) != 0:
                     n_chars += len(n_tokens[-1])
                     span_end_to_offset[i] = n_chars
                     n_chars += 1
                     span_start_to_offset[i] = n_chars
-                n_tokens.append(token.replace(consts.GPT_TOKEN, ""))
+                n_tokens.append(token.replace(consts.PREFIX_TOKEN, ""))
             else:
                 n_tokens[-1] = n_tokens[-1] + token
         if len(n_tokens) != 0:
             span_end_to_offset[len(tokens)] = n_chars + len(n_tokens[-1])
-        text = " ".join(n_tokens)
+        text = " ".join(n_tokens).replace(consts.SPLIT_TOKEN, "")
         spans = list(
             map(
                 lambda x: (span_start_to_offset[x[0]], span_end_to_offset[x[1]], x[2]),

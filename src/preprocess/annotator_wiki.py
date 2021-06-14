@@ -43,7 +43,7 @@ class WikiAnnotator(BaseAnnotator):
         keyword_dict = {
             f"{MARK_PREFIX}{p}{MARK_SUFFIX}": [p]
             for p in quality_phrases
-            if p.startswith(consts.GPT_TOKEN)
+            if p.startswith(consts.PREFIX_TOKEN)
         }
         kwprocessor.add_keywords_from_dict(keyword_dict)
 
@@ -51,7 +51,7 @@ class WikiAnnotator(BaseAnnotator):
         raw_corpus = utils.TextFile.load(self.path_tokenized_corpus)
         replaced_corpus = kwprocessor.replace_keywords(raw_corpus)
         replaced_corpus = replaced_corpus.replace(
-            f"{consts.GPT_TOKEN}{MARK_PREFIX}", f"{MARK_PREFIX}{consts.GPT_TOKEN}"
+            f"{consts.PREFIX_TOKEN}{MARK_PREFIX}", f"{MARK_PREFIX}{consts.PREFIX_TOKEN}"
         )
         path_replaced_corpus = self.path_marked_corpus.with_name(
             f"tmp.replaced.{self.path_marked_corpus.name}"
@@ -64,7 +64,7 @@ class WikiAnnotator(BaseAnnotator):
         replaced_html = (
             replaced_corpus.replace(MARK_PREFIX, consts.HTML_BP)
             .replace(MARK_SUFFIX, consts.HTML_EP)
-            .replace(consts.GPT_TOKEN, "")
+            .replace(consts.PREFIX_TOKEN, "")
         )
         replaced_html = "\n".join(
             [f"<p> {line} </p>" for line in replaced_html.splitlines()]

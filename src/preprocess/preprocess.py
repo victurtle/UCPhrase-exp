@@ -32,11 +32,29 @@ class Preprocessor:
         sents = doc["sents"]
 
         # tokenize
-        # NOTE: add space before each raw sentence to tokenize the first token with GPT_TOKEN for phrase matching
-        tokenized_sents = [
-            consts.LM_TOKENIZER.tokenize(" " + s, add_special_tokens=False)
-            for s in sents
-        ]
+        # For GPT-2: add space before each raw sentence to tokenize the first token with PREFIX_TOKEN for phrase matching
+        # tokenized_sents = [
+        #     consts.LM_TOKENIZER.tokenize(" " + s, add_special_tokens=False)
+        #     for s in sents
+        # ]
+        # For BERT: add the PREFIX_TOKEN token manually based on SPLIT_TOKEN
+        tokenized_sents = [consts.LM_TOKENIZER.tokenize(s) for s in sents]
+        for i, tokens in enumerate(tokenized_sents):
+            trans_tokens = list()  # transition tokens
+            start_split = False
+            for token in tokens:
+                if (consts.SPLIT_TOKEN in token) & (start_split == False):
+                    trans_tokens.append(consts.PREFIX_TOKEN + token)
+                    start_split = True
+                elif (consts.SPLIT_TOKEN in token) & (start_split == True):
+                    trans_tokens.append(token)
+                elif (consts.SPLIT_TOKEN not in token) & (start_split == True):
+                    trans_tokens.append(token)
+                    start_split = False
+                elif (consts.SPLIT_TOKEN not in token) & (start_split == False):
+                    trans_tokens.append(consts.PREFIX_TOKEN + token)
+            tokenized_sents[i] = trans_tokens
+
         cleaned_tokenized_sents = []
         for tokens in tokenized_sents:
             tokens_batch = utils.get_batches(tokens, batch_size=consts.MAX_SENT_LEN)
@@ -51,9 +69,16 @@ class Preprocessor:
             widxs = [
                 i
                 for i, token in enumerate(tokens)
-                if token.startswith(consts.GPT_TOKEN)
+                if token.startswith(consts.PREFIX_TOKEN)
             ]  # the indices of start of words
-            ids = consts.LM_TOKENIZER.convert_tokens_to_ids(tokens)
+            trans_tokens = tokens.copy()
+            trans_tokens = [
+                token.replace(consts.PREFIX_TOKEN, "") for token in trans_tokens
+            ]
+            # For GPT-2
+            # ids = consts.LM_TOKENIZER.convert_tokens_to_ids(tokens)
+            # For BERT
+            ids = consts.LM_TOKENIZER.convert_tokens_to_ids(trans_tokens)
             tokenized_id_doc["sents"].append({"ids": ids, "widxs": widxs})
 
         return tokenized_doc, tokenized_id_doc

@@ -68,6 +68,21 @@ class BaseModel(nn.Module):
         sents = []
         for predicted_sent in predicted_doc["sents"]:
             tokens = consts.LM_TOKENIZER.convert_ids_to_tokens(predicted_sent["ids"])
+            # For BERT
+            trans_tokens = list()  # transition tokens
+            start_split = False
+            for token in tokens:
+                if (consts.SPLIT_TOKEN in token) & (start_split == False):
+                    trans_tokens.append(consts.PREFIX_TOKEN + token)
+                    start_split = True
+                elif (consts.SPLIT_TOKEN in token) & (start_split == True):
+                    trans_tokens.append(token)
+                elif (consts.SPLIT_TOKEN not in token) & (start_split == True):
+                    trans_tokens.append(token)
+                    start_split = False
+                elif (consts.SPLIT_TOKEN not in token) & (start_split == False):
+                    trans_tokens.append(consts.PREFIX_TOKEN + token)
+            tokens = trans_tokens
             predicted_spans = [s for s in predicted_sent["spans"] if s[2] > threshold]
             predicted_spans = sorted(
                 predicted_spans, key=lambda s: (s[1] - s[0], s[2]), reverse=True
@@ -79,7 +94,7 @@ class BaseModel(nn.Module):
                 if idxs_set & idxs_taken:
                     continue
                 idxs_taken |= idxs_set
-                phrase = consts.roberta_tokens_to_str(tokens[l_idx : r_idx + 1])
+                phrase = consts.tokens_to_str(tokens[l_idx : r_idx + 1])
                 spans.append([l_idx, r_idx, phrase])
             sents.append({"tokens": tokens, "spans": spans})
         return sents
@@ -205,7 +220,7 @@ class DecodedCorpus:
                 for l, r, _ in sent["spans"]:
                     tokens[l] = consts.HTML_BP + tokens[l]
                     tokens[r] = tokens[r] + consts.HTML_EP + " |"
-                html_lines.append(consts.roberta_tokens_to_str(tokens))
+                html_lines.append(consts.tokens_to_str(tokens))
         html_lines = [f"<p>{line}<p>" for line in html_lines]
         utils.TextFile.dumplist(html_lines, path_output)
 

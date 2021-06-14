@@ -54,7 +54,7 @@ class CoreAnnotator(BaseAnnotator):
                     l_idx = widxs[i_word]
                     r_idx = widxs[i_word + n] - 1
                     ngram = tuple(tokens[l_idx : r_idx + 1])
-                    ngram = tuple("".join(ngram).split(consts.GPT_TOKEN.lower())[1:])
+                    ngram = tuple("".join(ngram).split(consts.PREFIX_TOKEN.lower())[1:])
                     if is_valid_ngram(ngram):
                         phrase = " ".join(ngram)
                         phrase2cnt[phrase] += 1

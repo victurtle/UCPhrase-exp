@@ -97,7 +97,7 @@ class BaseAnnotator:
             (
                 label,
                 "".join(consts.PRETRAINED_TOKENIZER.convert_ids_to_tokens(ids))
-                .replace(consts.GPT_TOKEN, " ")
+                .replace(consts.PREFIX_TOKEN, " ")
                 .strip(),
             )
             for label, ids in spans

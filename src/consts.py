@@ -67,13 +67,18 @@ DOCIDS_WITH_GOLD = {
 }  # Task 2 evaluation is performed on docs with gold keyphrases
 
 # huggingface LM
-GPT_TOKEN = "Ġ"
+PREFIX_TOKEN = "Ġ"
+SPLIT_TOKEN = "@@"
 LM_NAME = DATA_CONFIG.lm_name
 LM_NAME_SUFFIX = LM_NAME.split("/")[-1]
 DEVICE = utils.get_device(ARGS.gpu)
-LM_MODEL = transformers.RobertaModel.from_pretrained(LM_NAME).eval().to(DEVICE)
-LM_TOKENIZER = transformers.RobertaTokenizerFast.from_pretrained(LM_NAME)
-print(f"[consts] Loading pretrained model: {LM_NAME} OK!")
+# LM_MODEL = transformers.RobertaModel.from_pretrained(LM_NAME).eval().to(DEVICE)
+# LM_TOKENIZER = transformers.RobertaTokenizerFast.from_pretrained(LM_NAME)
+LM_MODEL = transformers.AutoModel.from_pretrained(LM_NAME).eval().to(DEVICE)
+LM_TOKENIZER = transformers.AutoTokenizer.from_pretrained(
+    LM_NAME, use_fast=False, normalization=True
+)
+print(f"[Consts] Loading pretrained model: {LM_NAME} OK!")
 
 # html visualization
 HTML_BP = '<span style="color: #ff0000">'
@@ -90,5 +95,5 @@ NUM_CORES = mp.cpu_count() - 2
 torch.set_num_threads(NUM_CORES)
 
 
-def roberta_tokens_to_str(tokens):
-    return "".join(tokens).replace(GPT_TOKEN, " ").strip()
+def tokens_to_str(tokens):
+    return "".join(tokens).replace(PREFIX_TOKEN, " ").strip().replace(SPLIT_TOKEN, "")
