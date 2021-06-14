@@ -68,21 +68,21 @@ class BaseModel(nn.Module):
         sents = []
         for predicted_sent in predicted_doc["sents"]:
             tokens = consts.LM_TOKENIZER.convert_ids_to_tokens(predicted_sent["ids"])
-            # For BERT
-            trans_tokens = list()  # transition tokens
-            start_split = False
-            for token in tokens:
-                if (consts.SPLIT_TOKEN in token) & (start_split == False):
-                    trans_tokens.append(consts.PREFIX_TOKEN + token)
-                    start_split = True
-                elif (consts.SPLIT_TOKEN in token) & (start_split == True):
-                    trans_tokens.append(token)
-                elif (consts.SPLIT_TOKEN not in token) & (start_split == True):
-                    trans_tokens.append(token)
-                    start_split = False
-                elif (consts.SPLIT_TOKEN not in token) & (start_split == False):
-                    trans_tokens.append(consts.PREFIX_TOKEN + token)
-            tokens = trans_tokens
+            # # For BERT
+            # trans_tokens = list()  # transition tokens
+            # start_split = False
+            # for token in tokens:
+            #     if (consts.SPLIT_TOKEN in token) & (start_split == False):
+            #         trans_tokens.append(consts.PREFIX_TOKEN + token)
+            #         start_split = True
+            #     elif (consts.SPLIT_TOKEN in token) & (start_split == True):
+            #         trans_tokens.append(token)
+            #     elif (consts.SPLIT_TOKEN not in token) & (start_split == True):
+            #         trans_tokens.append(token)
+            #         start_split = False
+            #     elif (consts.SPLIT_TOKEN not in token) & (start_split == False):
+            #         trans_tokens.append(consts.PREFIX_TOKEN + token)
+            # tokens = trans_tokens
             predicted_spans = [s for s in predicted_sent["spans"] if s[2] > threshold]
             predicted_spans = sorted(
                 predicted_spans, key=lambda s: (s[1] - s[0], s[2]), reverse=True

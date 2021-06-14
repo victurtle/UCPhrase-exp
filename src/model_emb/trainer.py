@@ -88,7 +88,7 @@ class EmbedTrainer:
                     pred_probs = pred_probs.detach().cpu().numpy().tolist()
                     pred_labels += [int(p > 0.5) for p in pred_probs]
             valid_f1 = f1_score(gold_labels, pred_labels, average="micro")
-            utils.Log.info(f"valid f1: {valid_f1}")
+            utils.Log.info(f"Valid f1: {valid_f1}")
             if valid_f1 < best_valid_f1:
                 utils.Log.info(f"Stop training. Best epoch: {epoch - 1}")
                 break
